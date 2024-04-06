@@ -5,7 +5,7 @@ ltl_orbit_mapper = {
     3: (12, 16, 19, 18, 17, 13, 8, 4, 1, 2, 3, 7),
 }
 # neighbors for a test case
-ltl_neighbours = {
+ltl_neighbours_mapper: dict[int, dict] = {
     1: {
         "ne": 5,
         "e": 2,
