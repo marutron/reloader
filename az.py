@@ -1,12 +1,21 @@
 from typing import Optional
 
 
+class Wall:
+    filled: bool = True
+    number: None
+    neighbours: None
+    orbit: None
+
+
 class Cell:
+    filled: bool
     number: int
-    neighbours: dict[str, Optional["Cell" | str]]
+    neighbours: dict[str, Optional["Cell"]]
     orbit: "Orbit"
 
     def __init__(self, number: int):
+        self.filled = False
         self.number = number
         self.neighbours = {
             "ne": None,
@@ -17,15 +26,22 @@ class Cell:
             "nw": None,
         }
 
+    def __repr__(self):
+        return str(self.__dict__)
+
 
 class Orbit:
     number: int
     cells: dict[int, Cell]
 
-    def __init__(self, number: int, mapper: dict):
+    def __init__(self, number: int, cells: tuple):
         self.number = number
-        for cell_num in mapper[number]:
+        self.cells = {}
+        for cell_num in cells:
             self.cells.setdefault(cell_num, Cell(cell_num))
+
+    def __repr__(self):
+        return str(self.__dict__)
 
     def __hash__(self):
         return self.number
