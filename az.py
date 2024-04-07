@@ -190,10 +190,12 @@ class Cell:
 
 class Orbit:
     number: int
+    filled: bool
     cells: dict[int, Cell]
 
     def __init__(self, number: int, cells: tuple[int], cell_pool: dict):
         self.number = number
+        self.filled = False
         self.cells = {cell_num: Cell(cell_num, self, cell_pool) for cell_num in cells}
 
     def __repr__(self):
@@ -209,14 +211,18 @@ class Orbit:
             else False
         )
 
-    def install(self) -> int | None:
+    def install(self) -> list[int] | None:
         """Install fuel assembly in orbit"""
         ready = []
+        filled = []
         for cell in self.cells.values():
             if cell.ready():
                 ready.append(cell)
-                if ready:
-                    # Todo use MCTS for filling
-                    ready[0].filled = True
-                    return ready[0].number
-        return None
+        if ready:
+            # Todo use MCTS for filling
+            for cell in ready:
+                cell.filled = True
+                filled.append(cell)
+                ready.remove(cell)
+        self.filled = True if all(elm.filled for elm in self.cells.values()) else False
+        return [elm.number for elm in filled]
